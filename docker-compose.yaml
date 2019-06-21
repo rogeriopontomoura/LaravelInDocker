@@ -1,0 +1,98 @@
+# 
+# docker-compose é usado para configurar e subir varios containers
+#
+
+# Especifica a versão do docker-compose
+#version: '3'
+# 2.3 se estiver usando depends on
+version: '2.3'
+
+# Inicia o a matriz de serviços a serem configurados
+services:
+    # Serviço nginx
+    nginx:
+        # Cria a imagem com base no Dockerfile localizado no diretorio informado
+        build: .docker/nginx
+        # Da nome ao container
+        container_name: nginx
+        # Habilita o reinicio automatico
+        restart: always
+        # Habilita conexão bash
+        tty: true
+        # Expõe a porta
+        ports:
+            - "8000:80"
+        # Mapea o diretorio local . na pasta /var/www do container
+        volumes:
+            - .:/var/www
+        networks: 
+            - app-network
+                        
+    # Serviço redis
+    redis:
+        # Cria com base na imagem
+        image: redis:alpine
+        # Da nome ao container
+        container_name: redis        
+        # Expõe a porta
+        expose:
+            - 6379
+        networks: 
+            - app-network
+
+    # Serviço app
+    app:
+        # Cria a imagem com base no Dockerfile localizado no diretorio local (.)
+        build: .
+        # Da nome ao container
+        container_name: app
+        # Mapea o diretorio local (.) na pasta /var/www do container
+        volumes:
+            - .:/var/www
+        networks: 
+            - app-network
+        # Seta a dependencia de outro serviço
+        depends_on:
+            # Depende do serviço db
+            db:
+                # Cria uma condição
+                condition: service_healthy
+
+    # Serviço app
+    db: 
+        # Cria a imagem com base no Dockerfile localizado no diretorio local (.)
+        image: mysql:5.7
+        # Da nome ao container
+        container_name: db
+        # Seta o driver do mysql
+        command: --innodb-use-native-aio=0
+        # Habilita o reinicio automatico
+        restart: always
+        # Habilita conexão bash
+        tty: true
+        # Expõe a porta
+        ports:
+            - "3306:3306"
+        # Seta as váriaveis de ambiente
+        environment:
+            - MYSQL_DATABASE=laravel
+            - MYSQL_USER=root
+            - MYSQL_ROOT_PASSWORD=root
+        # Mapea o diretorio local (.) na pasta /var/www do container
+        volumes:
+            - ./.docker/dbdata:/var/lib/mysql
+        # Ingressa na rede
+        networks: 
+            - app-network
+        healthcheck:
+            test: ["CMD-SHELL", 'mysql -uroot --database=laravel --password=root --execute="SELECT count(table_name) > 0 FROM information_schema.tables;" --skip-column-names -B'] 
+            interval: 10s
+            timeout: 10s
+            retries: 4        
+
+# Cria a rede para uso dos serviços
+networks: 
+    # Da nome a rede
+    app-network:
+        # Seta o driver
+        driver: bridge
