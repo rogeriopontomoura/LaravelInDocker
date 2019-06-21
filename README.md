@@ -12,5 +12,7 @@ Mysql
 PHP-FPM
 
 Endereço da imagem Docker Hub: 
-(https://hub.docker.com/r/rogeriosims/laravel_docker)
+(https://hub.docker.com/r/rogeriosims/laravelindocker)
 
+Arquivo docker-compose.yaml.prod está configurado para ser usado em produção
+Arquivo Dockerfile.prod está configurado para gerar a imagem de produção
