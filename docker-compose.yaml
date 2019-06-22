@@ -3,7 +3,8 @@
 #
 
 # Especifica a versão do docker-compose
-# na versão 3 o depends_on só trata a ordem de criação dos containers
+# Na versão 3 o depends_on só trata a ordem de criação dos containers
+# Para isso utilizamos o dockerize
 version: '3'
 
 # Inicia o a matriz de serviços a serem configurados
@@ -14,7 +15,7 @@ services:
         build: .docker/nginx
         # Da nome ao container
         container_name: nginx
-        # Habilita o reinicio automatico
+        # Habilita o reinicio automatico        
         restart: always
         # Habilita conexão bash
         tty: true
@@ -48,9 +49,23 @@ services:
         build: .
         # Da nome ao container
         container_name: app
+        # Configura o dockerize como entrypoint da aplicação
+        # Dockerize testa se a aplicação de banco de dados está funcional
+        entrypoint: dockerize -template ./.docker/app/.env:.env -wait tcp://db:3306 -timeout 40s ./.docker/app/entrypoint.sh
+        # Mapeia as váriaveis para serem usadas no template
+        environment:
+            - APP_NAME=LaravelDockerizado
+            - APP_URL=http://localhost
+            - DB_HOST=db
+            - DB_DATABASE=laravel
+            - DB_USERNAME=root
+            - DB_PASSWORD=root
+            - REDIS_HOST=redis
+        
         # Mapea o diretorio local (.) na pasta /var/www do container
         volumes:
             - .:/var/www
+        # Ingressa na rede
         networks: 
             - app-network
         # Seta a dependencia de outro serviço
