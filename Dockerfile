@@ -6,10 +6,16 @@
 FROM php:7.3.6-fpm-alpine3.9
 
 # Instala o openssl e bash
-RUN apk add --no-cache openssl bash
+RUN apk add --no-cache openssl
 
 # Instala o mysql-client
 RUN apk add mysql-client
+
+# Instala o bash
+RUN apk add bash
+
+# Instala nodejs e npm
+RUN apk add nodejs npm
 
 # Instala extensões
 RUN docker-php-ext-install pdo pdo_mysql
