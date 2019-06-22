@@ -3,8 +3,8 @@
 #
 
 # Especifica a versão do docker-compose
-# na versão 3 o depends_on só trata a ordem de criação dos containers
-version: '3'
+# 2.3 Versão antiga, que usa função depends_on para verificar a saúde da aplicação
+version: '2.3'
 
 # Inicia o a matriz de serviços a serem configurados
 services:
@@ -26,9 +26,6 @@ services:
             - .:/var/www
         networks: 
             - app-network
-        # Seta a dependencia de outro serviço
-        depends_on:
-            - app
                         
     # Serviço redis
     redis:
@@ -55,8 +52,10 @@ services:
             - app-network
         # Seta a dependencia de outro serviço
         depends_on:
-            - db
-            - redis
+            # Depende do serviço db
+            db:
+                # Cria uma condição
+                condition: service_healthy
 
     # Serviço app
     db: 
@@ -83,7 +82,12 @@ services:
             - ./.docker/dbdata:/var/lib/mysql
         # Ingressa na rede
         networks: 
-            - app-network      
+            - app-network
+        healthcheck:
+            test: ["CMD-SHELL", 'mysql -uroot --database=laravel --password=root --execute="SELECT count(table_name) > 0 FROM information_schema.tables;" --skip-column-names -B'] 
+            interval: 10s
+            timeout: 10s
+            retries: 4        
 
 # Cria a rede para uso dos serviços
 networks: 
