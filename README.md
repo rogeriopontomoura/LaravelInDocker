@@ -2,11 +2,11 @@
 
 ### Módulo - Devops/Docker
 
-*Primeiro Desafio:*
+**Primeiro Desafio:**
 
 Configurar um ambiente de desenvolvimento laravel usando docker-compose
 
-*Aplicações:*
+**Aplicações:**
 * Nginx
 * Redis
 * Mysql
@@ -15,19 +15,25 @@ Configurar um ambiente de desenvolvimento laravel usando docker-compose
 ### Instruções:
 
 Realize o clone do reposotório:
-> git clone git@github.com:rogeriopontomoura/LaravelInDocker.git
-Execute a imagem
-> docker-compose up -d
+> git clone git@github.com:rogeriopontomoura/LaravelInDocker.git  
 
-*Obs:* 
+
+Execute a imagem  
+> docker-compose up -d  
+  
+  
+  
+**Obs:** 
 
 Arquivos docker-compose.yaml.prod e Dockerfile.prod estão configurados para gerar a imagem de produção.
-
+  
+  
+  
 ### Atualização - segundo desafio
  
 Incluído dockerize para facilitar a configuração do laravel app e nginx.
-
-
+  
+  
 Endereço da imagem de produção no Docker Hub: 
 
 https://hub.docker.com/r/rogeriosims/laravelindocker
