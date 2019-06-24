@@ -1,29 +1,33 @@
 # Curso de Aplicações Modernas com Microserviços - code.education
 
-## Módulo - Devops/Docker
+### Módulo - Devops/Docker
 
-* Primeiro Exercício: *
--------------
+*Primeiro Desafio:*
 
-Configurar ambiente de desenvolvimento laravel usando docker-compose
-* Aplicações: * 
+Configurar um ambiente de desenvolvimento laravel usando docker-compose
+
+*Aplicações:*
 * Nginx
 * Redis
 * Mysql
 * PHP-FPM
 
-* Instruções: *
----------------
+### Instruções:
 
-1 - Realizar clone do reposotório:
-    git clone git@github.com:rogeriopontomoura/LaravelInDocker.git
-2 - Rodar comando docker-compose up -d
+Realize o clone do reposotório:
+> git clone git@github.com:rogeriopontomoura/LaravelInDocker.git
+Execute a imagem
+> docker-compose up -d
 
-* Obs: * Arquivos docker-compose.yaml.prod e Dockerfile.prod estão configurados para gerar a imagem de produção
+*Obs:* 
 
-* Atualização *
----------------
-Incluído dockerize para facilitar a configuração do laravel.
+Arquivos docker-compose.yaml.prod e Dockerfile.prod estão configurados para gerar a imagem de produção.
+
+### Atualização - segundo desafio
+ 
+Incluído dockerize para facilitar a configuração do laravel app e nginx.
+
 
 Endereço da imagem de produção no Docker Hub: 
-(https://hub.docker.com/r/rogeriosims/laravelindocker)
+
+https://hub.docker.com/r/rogeriosims/laravelindocker
