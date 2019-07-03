@@ -1,0 +1,115 @@
+# 
+# docker-compose é usado para configurar e subir varios containers
+#
+
+# Especifica a versão do docker-compose
+# Na versão 3 o depends_on só trata a ordem de criação dos containers
+# Para isso utilizamos o dockerize
+version: '3'
+
+# Inicia o a matriz de serviços a serem configurados
+services:
+    # Serviço nginx
+    nginx:
+        # Cria a imagem com base no Dockerfile localizado no diretorio informado
+        build: .docker/nginx
+        # Da nome ao container
+        container_name: nginx
+        # Configura o dockerize como entrypoint da aplicação
+        # Dockerize testa se a aplicação de banco de dados está funcional
+        entrypoint: dockerize -template /var/www/.docker/nginx/nginx.conf:/etc/nginx/conf.d/nginx.conf nginx -g "daemon off;"
+        # Mapeia as váriaveis para serem usadas no template
+        environment:
+            - APP_HOST=app
+            - APP_PORT=9000            
+        # Habilita o reinicio automatico               
+        restart: always
+        # Habilita conexão bash
+        tty: true
+        # Expõe a porta
+        ports:
+            - "8000:80"
+        # Mapea o diretorio local . na pasta /var/www do container
+        volumes:
+            - .:/var/www
+        networks: 
+            - app-network
+        # Seta a dependencia de outro serviço
+        depends_on:
+            - app
+                        
+    # Serviço redis
+    redis:
+        # Cria com base na imagem
+        image: redis:alpine
+        # Da nome ao container
+        container_name: redis        
+        # Expõe a porta
+        expose:
+            - 6379
+        networks: 
+            - app-network
+
+    # Serviço app
+    app:
+        # Cria a imagem com base no Dockerfile localizado no diretorio local (.)
+        build: .
+        # Da nome ao container
+        container_name: app
+        # Configura o dockerize como entrypoint da aplicação
+        # Dockerize testa se a aplicação de banco de dados está funcional
+        # entrypoint: dockerize -template ./.docker/app/.env:.env -wait tcp://db:3306 -timeout 40s ./.docker/app/entrypoint.sh
+        # Mapeia as váriaveis para serem usadas no template
+        #environment:
+        #    - APP_NAME=LaravelDockerizado
+        #    - APP_URL=http://localhost
+        #    - DB_HOST=db
+        #    - DB_DATABASE=laravel
+        #    - DB_USERNAME=root
+        #    - DB_PASSWORD=root
+        #    - REDIS_HOST=redis
+        
+        # Mapea o diretorio local (.) na pasta /var/www do container
+        volumes:
+            - .:/var/www
+        # Ingressa na rede
+        networks: 
+            - app-network
+        # Seta a dependencia de outro serviço
+        depends_on:
+            - db
+            - redis
+
+    # Serviço app
+    db: 
+        # Cria a imagem com base no Dockerfile localizado no diretorio local (.)
+        image: mysql:5.7
+        # Da nome ao container
+        container_name: db
+        # Seta o driver do mysql
+        command: --innodb-use-native-aio=0
+        # Habilita o reinicio automatico
+        restart: always
+        # Habilita conexão bash
+        tty: true
+        # Expõe a porta
+        ports:
+            - "3306:3306"
+        # Seta as váriaveis de ambiente
+        environment:
+            - MYSQL_DATABASE=laravel
+            - MYSQL_USER=root
+            - MYSQL_ROOT_PASSWORD=root
+        # Mapea o diretorio local (.) na pasta /var/www do container
+        volumes:
+            - ./.docker/dbdata:/var/lib/mysql
+        # Ingressa na rede
+        networks: 
+            - app-network      
+
+# Cria a rede para uso dos serviços
+networks: 
+    # Da nome a rede
+    app-network:
+        # Seta o driver
+        driver: bridge
