@@ -15,7 +15,7 @@ steps:
     args: ['exec', '-t', 'app', 'composer', 'install']
 
   # Identificação da etapa
-  - id: "Copiando .env"
+  - id: "Copiando .env" 
     # Nome da imagem a ser usada
     name: 'gcr.io/cloud-builders/docker'
     # Argumentos passados para a imagem e ou executados

@@ -48,7 +48,4 @@ Incluída integração continua com o Cloud Build - GCP
 
 * Incluído arquivo "docker-compose.cloudbuild.yaml" com as instruções de dockerize para o app removidas.
 * Incluído arquivo "cloudbuild.yaml" com instruções de deploy para o cloudbuild.
-* Iniciado gitflow com criação do branch develop
 * Configurada integração do gitHub e Cloud Build
-
-  
