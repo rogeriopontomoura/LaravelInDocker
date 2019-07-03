@@ -1,28 +1,50 @@
+# Etapas a serem seguidas
 steps:
+  # Identificação da etapa
   - id: "Rodando docker-compose"
+    # Nome da imagem a ser usada
     name: 'gcr.io/$PROJECT_ID/docker-compose:1.24.0'
+    # Argumentos passados para a imagem e ou executados
     args: ['-f', 'docker-compose.cloudbuild.yaml', 'up', '-d']
-
+  
+  # Identificação da etapa
   - id: "Rodando docker ps"
+    # Nome da imagem a ser usada
     name: 'gcr.io/cloud-builders/docker'
+    # Argumentos passados para a imagem e ou executados
     args: ['ps']
 
+  # Identificação da etapa
   - id: "Rodando composer"
+    # Nome da imagem a ser usada
     name: 'gcr.io/cloud-builders/docker'
+    # Argumentos passados para a imagem e ou executados
     args: ['exec', '-t', 'app', 'composer', 'install']
 
+  # Identificação da etapa
   - id: "Copiando .env"
+    # Nome da imagem a ser usada
     name: 'gcr.io/cloud-builders/docker'
+    # Argumentos passados para a imagem e ou executados
     args: ['exec', '-t', 'app', 'cp', '.env.example', '.env']
 
+  # Identificação da etapa
   - id: "Rodando Key Generate"
+    # Nome da imagem a ser usada
     name: 'gcr.io/cloud-builders/docker'
+    # Argumentos passados para a imagem e ou executados
     args: ['exec', '-t', 'app', 'php', '/var/www/artisan', 'key:generate']
 
+  # Identificação da etapa
   - id: "Rodando migrations"
+    # Nome da imagem a ser usada
     name: 'gcr.io/cloud-builders/docker'
+    # Argumentos passados para a imagem e ou executados
     args: ['exec', '-t', 'app', 'php', '/var/www/artisan', 'migrate']
 
+  # Identificação da etapa
   - id: "Rodando phpunit"
+    # Nome da imagem a ser usada
     name: 'gcr.io/cloud-builders/docker'
+    # Argumentos passados para a imagem e ou executados
     args: ['exec', '-t', 'app', 'php', '/var/www/vendor/bin/phpunit', '-c', '/var/www/phpunit.xml']
