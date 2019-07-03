@@ -37,3 +37,18 @@ Incluído dockerize para facilitar a configuração do laravel app e nginx.
 Endereço da imagem de produção no Docker Hub: 
 
 https://hub.docker.com/r/rogeriosims/laravelindocker
+
+
+### Atualização - Continuos Integration
+
+Incluída integração continua com o Cloud Build - GCP 
+
+
+**Cloud Build** 
+
+* Incluído arquivo "docker-compose.cloudbuild.yaml" com as instruções de dockerize para o app removidas.
+* Incluído arquivo "cloudbuild.yaml" com instruções de deploy para o cloudbuild.
+* Iniciado gitflow com criação do branch develop
+* Configurada integração do gitHub e Cloud Build
+
+  
